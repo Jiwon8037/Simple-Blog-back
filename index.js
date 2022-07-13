@@ -5,6 +5,7 @@ const bodyparser=require('koa-bodyparser');
 const mongoose=require('mongoose');
 
 const app=new Koa();
+const jwtMiddleware=require('./lib/jwtMiddleware');
 const router=new Router();
 const {port,MONGO_URI}=process.env;
 const api=require('./routes');
@@ -17,9 +18,10 @@ mongoose.connect(MONGO_URI)
         console.error(e);
     });
 
-app.use(bodyparser());
-
 router.use('/api',api.routes());
+
+app.use(bodyparser());
+app.use(jwtMiddleware);
 
 app.use(router.routes())
    .use(router.allowedMethods());
